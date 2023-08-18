@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package chat.v1;
+
+service Chat {
+    rpc Say(SayRequest) returns (SayResponse) {}
+    rpc Listen(ListenRequest) returns (stream ListenResponse) {}
+}
+
+// Say
+message SayRequest {
+    string message = 1;
+}
+
+message SayResponse {
+    bool ok = 1;
+    string error = 2;
+}
+
+// Listen
+message ListenRequest {
+}
+
+message ListenResponse {
+    string person = 1;
+    string message = 2;
+}
