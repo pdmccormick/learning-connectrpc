@@ -67,6 +67,11 @@ format:
 	@echo "     NPM RUN FORMAT"
 	$(Q)$(NPM) run format
 
+.PHONY: generate-buf
+generate-buf:
+	@echo "     BUF GENERATE"
+	$(Q)$(NPM) run buf:generate
+
 .PHONY: clean
 clean:
 	@echo "     CLEAN"

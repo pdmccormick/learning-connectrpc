@@ -11,10 +11,14 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
+		"buf:generate": "npx buf generate ../proto",
 		"test:integration": "playwright test",
 		"test:unit": "vitest"
 	},
 	"devDependencies": {
+		"@bufbuild/buf": "^1.26.1",
+		"@bufbuild/protoc-gen-connect-es": "^0.13.0",
+		"@bufbuild/protoc-gen-es": "^1.3.0",
 		"@playwright/test": "^1.28.1",
 		"@sveltejs/adapter-auto": "^2.0.0",
 		"@sveltejs/adapter-static": "^2.0.3",
@@ -33,5 +37,10 @@
 		"vite": "^4.4.2",
 		"vitest": "^0.32.2"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"@bufbuild/connect": "^0.13.0",
+		"@bufbuild/connect-web": "^0.13.0",
+		"@bufbuild/protobuf": "^1.3.0"
+	}
 }
