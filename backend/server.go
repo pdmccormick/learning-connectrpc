@@ -18,15 +18,13 @@ type Server struct {
 	router     chi.Router
 	httpServer http.Server
 
+	chatService *chatService
+
 	cancel context.CancelFunc
 }
 
 func (srv *Server) Init() error {
 	var router = chi.NewRouter()
-
-	if err := srv.setupRoutes(router); err != nil {
-		return err
-	}
 
 	*srv = Server{
 		Addr:            srv.Addr,
@@ -37,6 +35,12 @@ func (srv *Server) Init() error {
 			Addr:    srv.Addr,
 			Handler: router,
 		},
+
+		chatService: &chatService{srv},
+	}
+
+	if err := srv.setupRoutes(router); err != nil {
+		return err
 	}
 
 	return nil
@@ -48,6 +52,11 @@ func (srv *Server) setupRoutes(r chi.Router) error {
 	r.Mount("/debug", middleware.Profiler())
 
 	r.Mount("/", srv.FrontendHandler)
+
+	var api = chi.NewRouter()
+	r.Mount("/api", http.StripPrefix("/api", api))
+
+	api.Mount(srv.chatService.asHandler())
 
 	return nil
 }
