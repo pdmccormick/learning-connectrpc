@@ -21,6 +21,12 @@ type Server struct {
 	chatService *chatService
 
 	cancel context.CancelFunc
+
+	subs map[chan<- string]struct{}
+
+	broadcastc chan string
+	subc       chan chan<- string
+	unsubc     chan chan<- string
 }
 
 func (srv *Server) Init() error {
@@ -37,6 +43,16 @@ func (srv *Server) Init() error {
 		},
 
 		chatService: &chatService{srv},
+
+		subs: make(map[chan<- string]struct{}),
+
+		broadcastc: make(chan string, 10),
+		subc:       make(chan chan<- string, 1),
+		unsubc:     make(chan chan<- string, 1),
+	}
+
+	if err := srv.chatService.Init(); err != nil {
+		return err
 	}
 
 	if err := srv.setupRoutes(router); err != nil {
@@ -83,6 +99,22 @@ func (srv *Server) Run(ctx context.Context) error {
 
 		case err := <-httpErrc:
 			return fmt.Errorf("http server: %w", err)
+
+		case msg := <-srv.broadcastc:
+			for ch, _ := range srv.subs {
+				select {
+				case ch <- msg:
+				default:
+					// backlogged
+				}
+			}
+
+		case ch := <-srv.subc:
+			srv.subs[ch] = struct{}{}
+
+		case ch := <-srv.unsubc:
+			delete(srv.subs, ch)
+			close(ch)
 		}
 	}
 
