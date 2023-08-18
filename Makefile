@@ -50,6 +50,11 @@ generate:
 	@echo "     GENERATE"
 	$(Q)$(GO) generate ./...
 
+.PHONY: generate-buf
+generate-buf: $(BIN)/buf $(BIN)/protoc-gen-go $(BIN)/protoc-gen-connect-go
+	@echo "     GENERATE-BUF"
+	$(Q)$(BIN)/buf generate
+
 .PHONY: test
 test:
 	@echo "     TEST"
@@ -69,6 +74,18 @@ mod-download:
 mod-vendor:
 	@echo "     GO MOD VENDOR"
 	$(Q)$(GO) mod vendor
+
+$(BIN)/buf: Makefile
+	@mkdir -p $(@D)
+	$(GO) install github.com/bufbuild/buf/cmd/buf@v1.26.1
+
+$(BIN)/protoc-gen-go: Makefile
+	@mkdir -p $(@D)
+	$(GO) install google.golang.org/protobuf/cmd/protoc-gen-go
+
+$(BIN)/protoc-gen-connect-go: Makefile go.mod
+	@mkdir -p $(@D)
+	$(GO) install connectrpc.com/connect/cmd/protoc-gen-connect-go
 
 .PHONY: clean
 clean:
