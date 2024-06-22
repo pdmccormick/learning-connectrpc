@@ -1,5 +1,5 @@
-import { createPromiseClient } from '@bufbuild/connect';
-import { createConnectTransport } from '@bufbuild/connect-web';
+import { createPromiseClient } from '@connectrpc/connect';
+import { createConnectTransport } from '@connectrpc/connect-web';
 
 import { Chat } from './gen/chat/v1/chat_connect';
 

@@ -1,5 +1,5 @@
 import { default as adapterStatic } from '@sveltejs/adapter-static';
-import { vitePreprocess } from '@sveltejs/kit/vite';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 let adapter = adapterStatic({
 	pages: 'build',
