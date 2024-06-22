@@ -18,7 +18,7 @@ import (
 // generated with a version of connect newer than the one compiled into your binary. You can fix the
 // problem by either regenerating this code with an older version of connect or updating the connect
 // version compiled into your binary.
-const _ = connect.IsAtLeastVersion0_1_0
+const _ = connect.IsAtLeastVersion1_13_0
 
 const (
 	// ChatName is the fully-qualified name of the Chat service.
@@ -37,6 +37,13 @@ const (
 	ChatSayProcedure = "/chat.v1.Chat/Say"
 	// ChatListenProcedure is the fully-qualified name of the Chat's Listen RPC.
 	ChatListenProcedure = "/chat.v1.Chat/Listen"
+)
+
+// These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
+var (
+	chatServiceDescriptor      = v1.File_chat_v1_chat_proto.Services().ByName("Chat")
+	chatSayMethodDescriptor    = chatServiceDescriptor.Methods().ByName("Say")
+	chatListenMethodDescriptor = chatServiceDescriptor.Methods().ByName("Listen")
 )
 
 // ChatClient is a client for the chat.v1.Chat service.
@@ -58,12 +65,14 @@ func NewChatClient(httpClient connect.HTTPClient, baseURL string, opts ...connec
 		say: connect.NewClient[v1.SayRequest, v1.SayResponse](
 			httpClient,
 			baseURL+ChatSayProcedure,
-			opts...,
+			connect.WithSchema(chatSayMethodDescriptor),
+			connect.WithClientOptions(opts...),
 		),
 		listen: connect.NewClient[v1.ListenRequest, v1.ListenResponse](
 			httpClient,
 			baseURL+ChatListenProcedure,
-			opts...,
+			connect.WithSchema(chatListenMethodDescriptor),
+			connect.WithClientOptions(opts...),
 		),
 	}
 }
@@ -99,12 +108,14 @@ func NewChatHandler(svc ChatHandler, opts ...connect.HandlerOption) (string, htt
 	chatSayHandler := connect.NewUnaryHandler(
 		ChatSayProcedure,
 		svc.Say,
-		opts...,
+		connect.WithSchema(chatSayMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
 	)
 	chatListenHandler := connect.NewServerStreamHandler(
 		ChatListenProcedure,
 		svc.Listen,
-		opts...,
+		connect.WithSchema(chatListenMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
 	)
 	return "/chat.v1.Chat/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {

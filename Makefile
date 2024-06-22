@@ -77,15 +77,15 @@ mod-vendor:
 
 $(BIN)/buf: Makefile
 	@mkdir -p $(@D)
-	$(GO) install github.com/bufbuild/buf/cmd/buf@v1.26.1
+	$(GO) install github.com/bufbuild/buf/cmd/buf@v1.36.0
 
 $(BIN)/protoc-gen-go: Makefile
 	@mkdir -p $(@D)
-	$(GO) install google.golang.org/protobuf/cmd/protoc-gen-go
+	$(GO) install google.golang.org/protobuf/cmd/protoc-gen-go@v1.34.2
 
 $(BIN)/protoc-gen-connect-go: Makefile go.mod
 	@mkdir -p $(@D)
-	$(GO) install connectrpc.com/connect/cmd/protoc-gen-connect-go
+	$(GO) install connectrpc.com/connect/cmd/protoc-gen-connect-go@v1.16.2
 
 .PHONY: clean
 clean:
